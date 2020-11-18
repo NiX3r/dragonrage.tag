@@ -24,4 +24,23 @@ public class FileDefaults {
         
     }
     
+    public static void Players() {
+        
+        File msg = new File("plugins/TAG/players.yml");
+        if (!msg.exists()) {
+          
+            try {
+              
+                msg.createNewFile();
+              
+            } catch (IOException ex) {
+              
+                System.out.println("ERROR: Failed to create tags.yml file!");
+                ex.printStackTrace();
+              
+            }
+        }
+        
+    }
+    
 }
