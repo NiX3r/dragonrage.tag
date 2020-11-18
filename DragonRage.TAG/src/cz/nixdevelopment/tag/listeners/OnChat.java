@@ -48,6 +48,7 @@ public class OnChat implements Listener {
         }
         output = output.replaceAll("&", "§");
         output = output.replace("%CHAT%", msg);
+        output = output.replace("%", "%%");
         if(event.getPlayer().hasPermission("tag.color"))
             output = output.replaceAll("&", "§");
         
