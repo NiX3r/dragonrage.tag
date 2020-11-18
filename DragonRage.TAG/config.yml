@@ -1,0 +1,2 @@
+Prefix: '&4TAG > &7'
+Format: '%TAG% %PREFIX% %NICK% %SUFFIX%: %CHAT%'
