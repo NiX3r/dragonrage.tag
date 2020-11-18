@@ -35,7 +35,7 @@ public class FileDefaults {
               
             } catch (IOException ex) {
               
-                System.out.println("ERROR: Failed to create tags.yml file!");
+                System.out.println("ERROR: Failed to create players.yml file!");
                 ex.printStackTrace();
               
             }
