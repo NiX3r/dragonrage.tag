@@ -37,6 +37,7 @@ public class TAG extends JavaPlugin{
         
         Format = getConfig().getString("Format");
         Prefix = getConfig().getString("Prefix");
+        Prefix = Prefix.replaceAll("&", "§");
         
         FileDefaults.Tags();
         
