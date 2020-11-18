@@ -13,7 +13,8 @@ public class PlayersTagEvent {
     public PlayersTagEvent(Player player, TAGEvent activeTag, ArrayList<TAGEvent> tags) {
         this.player = player;
         this.activeTag = activeTag;
-        this.tags = tags;
+        if(tags != null)
+            this.tags = tags;
     }
     
     public Player GetPlayer() {
@@ -25,17 +26,28 @@ public class PlayersTagEvent {
     public void SetActiveTag(TAGEvent activeTag) {
         this.activeTag = activeTag;
     }
+    public void SetTags(ArrayList<TAGEvent> tags) {
+        this.tags = tags;
+    }
     public ArrayList<TAGEvent> GetTags(){
         return this.tags;
     }
     public Boolean HasTag(TAGEvent tag) {
-        if(tags.contains(tag))
-            return true;
-        else
-            return false;
+        if(this.tags != null) {
+            if(!this.tags.isEmpty()) {
+                if(tags.contains(tag))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return false;
     }
     public void AddTag(TAGEvent tag) {
         tags.add(tag);
+    }
+    public void SetTag(TAGEvent tag, String newTag) {
+        tags.set(tags.indexOf(tag), new TAGEvent(tag.GetIdentifier(), newTag));
     }
     public void RemoveTag(TAGEvent tag) {
         tags.remove(tag);

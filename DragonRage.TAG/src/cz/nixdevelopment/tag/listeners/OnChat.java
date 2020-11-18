@@ -15,7 +15,9 @@ public class OnChat implements Listener {
         
         String prefix = PermissionsEx.getUser(event.getPlayer()).getPrefix();
         String suffix = PermissionsEx.getUser(event.getPlayer()).getSuffix();
-        String tag = TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag().GetTag();
+        String tag = null;
+        if(TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag() != null)
+            tag = TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag().GetTag(); 
         String msg = event.getMessage();
         
         String output = TAG.Format;

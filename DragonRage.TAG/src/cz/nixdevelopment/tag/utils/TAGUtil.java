@@ -17,7 +17,7 @@ public class TAGUtil {
         
         Debugger.Debug("Loading tags...");
         
-        File tags = new File("plugins/AdventCalendar/tags.yml");
+        File tags = new File("plugins/TAG/tags.yml");
         FileConfiguration tagsFC = YamlConfiguration.loadConfiguration(tags);
         ArrayList<String> tagsTags = new ArrayList<String>();
         
@@ -32,7 +32,7 @@ public class TAGUtil {
             }
             catch(Exception ex) {
                 ex.printStackTrace();
-                Debugger.Debug(ex.getMessage());
+                Debugger.Debug(ex.toString());
             }
             
         }
@@ -45,30 +45,34 @@ public class TAGUtil {
         
         Debugger.Debug("Unloading tags...");
         
-        File tags = new File("plugins/AdventCalendar/tags.yml");
+        File tags = new File("plugins/TAG/tags.yml");
         FileConfiguration tagsFC = YamlConfiguration.loadConfiguration(tags);
+        ArrayList<String> tagz = new ArrayList<String>();
         
         for(TAGEvent tag : TAG.tags.GetArrayList()) {
             
             try {
                 
                 tagsFC.set(tag.GetIdentifier(), tag.GetTag());
+                tagz.add(tag.GetIdentifier());
                 
             }
             catch(Exception ex) {
                 ex.printStackTrace();
-                Debugger.Debug(ex.getMessage());
+                Debugger.Debug(ex.toString());
                 return;
             }
             
         }
+        
+        tagsFC.set("List", tagz);
         
         try {
             tagsFC.save(tags);
         }
         catch(Exception ex) {
             ex.printStackTrace();
-            Debugger.Debug(ex.getMessage());
+            Debugger.Debug(ex.toString());
             return;
         }
 
@@ -80,12 +84,14 @@ public class TAGUtil {
         
         Debugger.Debug("Loading player...");
 
+        File players = new File("plugins/TAG/players.yml");
+        FileConfiguration playersFC = YamlConfiguration.loadConfiguration(players);
+        
+        ArrayList<TAGEvent> tags = new ArrayList<TAGEvent>();
+
+        PlayersTagEvent pte = new PlayersTagEvent(player, null, null);
+        
         try {
-            File players = new File("plugins/AdventCalendar/players.yml");
-            FileConfiguration playersFC = YamlConfiguration.loadConfiguration(players);
-            
-            ArrayList<TAGEvent> tags = new ArrayList<TAGEvent>();
-            
             for(String tag : playersFC.getStringList(player.getUniqueId().toString() + ".Tags")) {
                 if(TAG.tags.TagExist(tag)) {
                     
@@ -94,18 +100,15 @@ public class TAGUtil {
                 }
             }
             
-            PlayersTagEvent pte = new PlayersTagEvent(player, null, tags);
             String activeTag = playersFC.getString(player.getUniqueId().toString() + ".Active");
             if(!activeTag.equals("none")) {
                 pte.SetActiveTag(TAG.tags.GetTagByIdentifier(activeTag));
             }
-            TAG.players.AddPlayer(pte);
+            pte.SetTags(tags);
         }
-        catch(Exception ex) {
-            //ex.printStackTrace();
-            Debugger.Debug(ex.getMessage());
-            return;
-        }
+        catch(Exception ex) {}
+        
+        TAG.players.AddPlayer(pte);
 
         Debugger.Debug("Player was loaded successfully");
         
@@ -116,7 +119,7 @@ public class TAGUtil {
         Debugger.Debug("Unloading player...");
 
         try {
-            File players = new File("plugins/AdventCalendar/players.yml");
+            File players = new File("plugins/TAG/players.yml");
             FileConfiguration playersFC = YamlConfiguration.loadConfiguration(players);
             ArrayList<String> tags = new ArrayList<String>();
             PlayersTagEvent pte = TAG.players.GetPlayersTagByPlayer(player);
@@ -125,7 +128,10 @@ public class TAGUtil {
                 tags.add(tag.GetIdentifier());
             }
             
-            playersFC.set(pte.GetPlayer().getUniqueId().toString() + ".Active", pte.GetActiveTag().GetIdentifier());
+            if(pte.GetActiveTag() != null)
+                playersFC.set(pte.GetPlayer().getUniqueId().toString() + ".Active", pte.GetActiveTag().GetIdentifier());
+            else
+                playersFC.set(pte.GetPlayer().getUniqueId().toString() + ".Active", "none");
             playersFC.set(pte.GetPlayer().getUniqueId().toString() + ".Tags", tags);
             
             playersFC.save(players);
@@ -133,7 +139,7 @@ public class TAGUtil {
         }
         catch(Exception ex) {
             ex.printStackTrace();
-            Debugger.Debug(ex.getMessage());
+            Debugger.Debug(ex.toString());
             return;
         }
         

@@ -17,42 +17,78 @@ public class Commands implements CommandExecutor {
         
         // All commands: /tag [list|set|add|remove|create|delete] <identifier|nick> <identifier|tag>
         
-        // Commands: /tag list
+        // Commands: /tag [list|listall]
         if(args.length == 1) {
             
-            String tags = "";
-            
-            for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).GetTags()) {
-                tags += ", " + tagz.GetIdentifier();
+            if(args[0].equalsIgnoreCase("list")) {
+                if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).GetTags() != null) {
+                    String tags = "";
+                    
+                    for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).GetTags()) {
+                        tags += ", " + tagz.GetIdentifier();
+                    }
+                    tags = tags.replaceFirst(", ", "");
+                    
+                    sender.sendMessage(Messages.List(sender.getName()).replace("%TAGS%", tags));
+                }
             }
-            tags = tags.replace(", ", "");
-            
-            sender.sendMessage(Messages.List(sender.getName()).replace("%TAGS%", tags));
+            else if(args[0].equalsIgnoreCase("listall")) {
+                if(sender.hasPermission("tag.viewother")) {
+                    String tags = "";
+                    
+                    for(TAGEvent tagz : TAG.tags.GetArrayList()) {
+                        tags += ", " + tagz.GetIdentifier();
+                    }
+                    tags = tags.replaceFirst(", ", "");
+                    
+                    sender.sendMessage(Messages.ListAll().replace("%TAGS%", tags));
+                }
+                else {
+                    sender.sendMessage(Messages.HaveNoPerm("tag.viewother"));
+                }
+            }
             
         }
         // Commands: /tag [list|delete|set] <nick|identifier>
         else if(args.length == 2) {
             if(args[0].equalsIgnoreCase("list")) {
-                if(sender.hasPermission("tag.view")) {
-                    String tags = "";
-                    
-                    for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags()) {
-                        tags += ", " + tagz.GetIdentifier();
+                if(sender.hasPermission("tag.viewother")) {
+                    if(Bukkit.getPlayer(args[1]) != null) {
+                        if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags().isEmpty()) {
+                            String tags = "";
+                            
+                            for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags()) {
+                                tags += ", " + tagz.GetIdentifier();
+                            }
+                            tags = tags.replaceFirst(", ", "");
+                            
+                            sender.sendMessage(Messages.List(args[1]).replace("%TAGS%", tags));
+                        }
                     }
-                    tags = tags.replace(", ", "");
-                    
-                    sender.sendMessage(Messages.List(args[1]).replace("%TAGS%", tags));
+                    else {
+                        sender.sendMessage(Messages.TargetOffline(args[1]));
+                    }
                 }
                 else {
-                    sender.sendMessage(Messages.HaveNoPerm("tag.view"));
+                    sender.sendMessage(Messages.HaveNoPerm("tag.viewother"));
                 }
             }
             else if(args[0].equalsIgnoreCase("set")) {
-                if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).HasTag(TAG.tags.GetTagByIdentifier(args[1]))) {
-                    TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).SetActiveTag(TAG.tags.GetTagByIdentifier(args[1]));
+                if(TAG.tags.TagExist(args[1])) {
+                    if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).HasTag(TAG.tags.GetTagByIdentifier(args[1]))) {
+                        TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).SetActiveTag(TAG.tags.GetTagByIdentifier(args[1]));
+                        sender.sendMessage(Messages.TagSet(args[1]));
+                    }
+                    else {
+                        sender.sendMessage(Messages.HaveNoTag(args[1]));
+                    }
+                }
+                else if(args[1].equalsIgnoreCase("none")) {
+                    TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).SetActiveTag(null);
+                    sender.sendMessage(Messages.TagSet(args[1]));
                 }
                 else {
-                    sender.sendMessage(Messages.HaveNoTag(args[1]));
+                    sender.sendMessage(Messages.TagNotExist(args[1]));
                 }
             }
             else if(args[0].equalsIgnoreCase("delete")) {
@@ -142,6 +178,7 @@ public class Commands implements CommandExecutor {
                 if(sender.hasPermission("tag.admin")) {
                     if(!TAG.tags.TagExist(args[1])) {
                         TAG.tags.AddTag(new TAGEvent(args[1], args[2]));
+                        sender.sendMessage(Messages.TagCreate(args[1]));
                     }
                     else {
                         sender.sendMessage(Messages.TagExist(args[1]));
@@ -153,7 +190,27 @@ public class Commands implements CommandExecutor {
             }
             else if(args[0].equalsIgnoreCase("update")) {
                 if(sender.hasPermission("tag.admin")) {
-                    
+                    if(TAG.tags.TagExist(args[1])) {
+                        String from, to;
+                        from = TAG.tags.GetTagByIdentifier(args[1]).GetTag();
+                        to = args[2];
+                        
+                        for(PlayersTagEvent pte : TAG.players.GetArrayList()) {
+
+                            if(pte.GetActiveTag().equals(TAG.tags.GetTagByIdentifier(args[1]))) {
+                                pte.SetActiveTag(new TAGEvent(args[1], args[2]));
+                            }
+                            pte.SetTag(TAG.tags.GetTagByIdentifier(args[1]), to);
+                            
+                        }
+                        
+                        TAG.tags.SetTag(TAG.tags.GetTagByIdentifier(args[1]), to);
+                        sender.sendMessage(Messages.TagUpdate(args[1], from, to));
+                        
+                    }
+                    else {
+                        sender.sendMessage(Messages.TagNotExist(args[1]));
+                    }
                 }
                 else {
                     sender.sendMessage(Messages.HaveNoPerm("tag.admin"));

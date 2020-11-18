@@ -9,11 +9,11 @@ public class Debugger {
 
     public static void Debug(String text) {
         
-        File debug = new File("debug.txt");
+        File debug = new File("plugins/TAG/debug.txt");
         
         if(debug.exists()) {
             try {
-                FileWriter fw = new FileWriter("debug.txt", true);
+                FileWriter fw = new FileWriter("plugins/TAG/debug.txt", true);
                 fw.write("[" + LocalDateTime.now().toString() + "] » " + text + "\n");
                 fw.flush();
                 fw.close();

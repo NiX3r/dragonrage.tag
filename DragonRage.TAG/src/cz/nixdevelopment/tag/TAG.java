@@ -40,6 +40,7 @@ public class TAG extends JavaPlugin{
         Prefix = Prefix.replaceAll("&", "§");
         
         FileDefaults.Tags();
+        FileDefaults.Players();
         
         TAGUtil.LoadTags();
         

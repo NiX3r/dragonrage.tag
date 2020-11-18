@@ -2,7 +2,7 @@ name: TAG
 description: Plugin For Orimo
 author: NiX3r
 website: https://www.facebook.com/NiX3rNiX3r
-main: cz.nixdevelopment.tag
+main: cz.nixdevelopment.tag.TAG
 version: 1.5.1
 commands:
     tag:

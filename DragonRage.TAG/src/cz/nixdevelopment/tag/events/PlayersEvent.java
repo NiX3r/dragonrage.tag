@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public class PlayersEvent {
 
-private ArrayList<PlayersTagEvent> players = null;
+private ArrayList<PlayersTagEvent> players = new ArrayList<PlayersTagEvent>();
     
     public PlayersEvent() {
         
@@ -17,9 +17,13 @@ private ArrayList<PlayersTagEvent> players = null;
     }
     public PlayersTagEvent GetPlayersTagByPlayer(Player player) {
         PlayersTagEvent output = null;
-        for(PlayersTagEvent pte : this.players) {
-            if(pte.GetPlayer().getUniqueId().equals(player.getUniqueId()))
-                output = pte;
+        if(this.players != null) {
+            if(!this.players.isEmpty()) {
+                for(PlayersTagEvent pte : this.players) {
+                    if(pte.GetPlayer().getUniqueId().equals(player.getUniqueId()))
+                        output = pte;
+                }
+            }
         }
         return output;
     }
