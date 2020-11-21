@@ -13,18 +13,21 @@ public class TagsEvent {
         return this.tags;
     }
     public TAGEvent GetTagByIdentifier(String identifier) {
-        TAGEvent output = null;
         for(TAGEvent tage : this.tags) {
-            if(tage.GetIdentifier().equals(identifier))
-                output = tage;
+            if(tage.GetIdentifier().equals(identifier)) {
+                //Bukkit.broadcastMessage("found");
+                return tage;
+            }
         }
-        return output;
+        return null;
     }
     public void AddTag(TAGEvent tag) {
         tags.add(tag);
     }
-    public void SetTag(TAGEvent tag, String newTag) {
-        tags.set(tags.indexOf(tag), new TAGEvent(tag.GetIdentifier(), newTag));
+    public void SetTag(TAGEvent tag, TAGEvent newTag) {
+        this.tags.remove(tag);
+        this.tags.add(newTag);
+        
     }
     public void RemoveTagByIdentifier(String identifier) {
         for(TAGEvent tage : this.tags) {

@@ -82,7 +82,7 @@ public class TAGUtil {
     
     public static void LoadPlayer(Player player) {
         
-        Debugger.Debug("Loading player...");
+        Debugger.Debug("Loading player " + player.getName() + "...");
 
         File players = new File("plugins/TAG/players.yml");
         FileConfiguration playersFC = YamlConfiguration.loadConfiguration(players);
@@ -110,13 +110,13 @@ public class TAGUtil {
         
         TAG.players.AddPlayer(pte);
 
-        Debugger.Debug("Player was loaded successfully");
+        Debugger.Debug("Player " + player.getName() + " was loaded successfully");
         
     }
     
     public static void UnloadPlayer(Player player) {
 
-        Debugger.Debug("Unloading player...");
+        Debugger.Debug("Unloading player " + player.getName() + "...");
 
         try {
             File players = new File("plugins/TAG/players.yml");
@@ -143,7 +143,7 @@ public class TAGUtil {
             return;
         }
         
-        Debugger.Debug("Player was unloaded successfully");
+        Debugger.Debug("Player " + player.getName() + " was unloaded successfully");
         
     }
     

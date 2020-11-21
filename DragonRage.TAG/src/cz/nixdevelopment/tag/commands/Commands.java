@@ -4,11 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import cz.nixdevelopment.tag.TAG;
 import cz.nixdevelopment.tag.events.PlayersTagEvent;
 import cz.nixdevelopment.tag.events.TAGEvent;
 import cz.nixdevelopment.tag.utils.Messages;
+import cz.nixdevelopment.tag.utils.TAGUtil;
 
 public class Commands implements CommandExecutor {
 
@@ -25,7 +27,7 @@ public class Commands implements CommandExecutor {
                     String tags = "";
                     
                     for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(sender.getName())).GetTags()) {
-                        tags += ", " + tagz.GetIdentifier();
+                        tags += "§7, " + tagz.GetIdentifier() + "§f[" + tagz.GetTag().replaceAll("&", "§").replaceAll("_", " ") + "§f]";
                     }
                     tags = tags.replaceFirst(", ", "");
                     
@@ -33,11 +35,11 @@ public class Commands implements CommandExecutor {
                 }
             }
             else if(args[0].equalsIgnoreCase("listall")) {
-                if(sender.hasPermission("tag.viewother")) {
+                if(sender.hasPermission("tag.listall")) {
                     String tags = "";
                     
                     for(TAGEvent tagz : TAG.tags.GetArrayList()) {
-                        tags += ", " + tagz.GetIdentifier();
+                        tags += "§7, " + tagz.GetIdentifier() + "§f[" + tagz.GetTag().replaceAll("&", "§").replaceAll("_", " ") + "§f]";
                     }
                     tags = tags.replaceFirst(", ", "");
                     
@@ -54,15 +56,15 @@ public class Commands implements CommandExecutor {
             if(args[0].equalsIgnoreCase("list")) {
                 if(sender.hasPermission("tag.viewother")) {
                     if(Bukkit.getPlayer(args[1]) != null) {
-                        if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags().isEmpty()) {
+                        if(TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags() != null) {
                             String tags = "";
                             
                             for(TAGEvent tagz : TAG.players.GetPlayersTagByPlayer(Bukkit.getPlayer(args[1])).GetTags()) {
-                                tags += ", " + tagz.GetIdentifier();
+                                tags += "§7, " + tagz.GetIdentifier() + "§f[" + tagz.GetTag().replaceAll("&", "§").replaceAll("_", " ") + "§f]";
                             }
                             tags = tags.replaceFirst(", ", "");
                             
-                            sender.sendMessage(Messages.List(args[1]).replace("%TAGS%", tags));
+                            sender.sendMessage(Messages.List(sender.getName()).replace("%TAGS%", tags));
                         }
                     }
                     else {
@@ -98,10 +100,14 @@ public class Commands implements CommandExecutor {
                         TAGEvent tag = TAG.tags.GetTagByIdentifier(args[1]);
                         
                         for(PlayersTagEvent pte : TAG.players.GetArrayList()) {
-                            if(pte.GetActiveTag().equals(tag)) {
-                                pte.SetActiveTag(null);
+                            if(pte.HasTag(tag)) {
+                                if(pte.GetActiveTag() != null) {
+                                    if(pte.GetActiveTag().equals(tag)) {
+                                        pte.SetActiveTag(null);
+                                    }
+                                }
+                                pte.RemoveTag(tag);
                             }
-                            pte.RemoveTag(tag);
                         }
                         tag = null;
                         TAG.tags.RemoveTagByIdentifier(args[1]);
@@ -191,21 +197,31 @@ public class Commands implements CommandExecutor {
             else if(args[0].equalsIgnoreCase("update")) {
                 if(sender.hasPermission("tag.admin")) {
                     if(TAG.tags.TagExist(args[1])) {
-                        String from, to;
-                        from = TAG.tags.GetTagByIdentifier(args[1]).GetTag();
-                        to = args[2];
+                        String sfrom, sto;
+                        sfrom = TAG.tags.GetTagByIdentifier(args[1]).GetTag();
+                        sto = args[2];
+                        
+                        TAGEvent from = TAG.tags.GetTagByIdentifier(args[1]);
+                        TAGEvent to = new TAGEvent(from.GetIdentifier(), sto);
+
+                        TAG.tags.SetTag(from, to);
                         
                         for(PlayersTagEvent pte : TAG.players.GetArrayList()) {
 
-                            if(pte.GetActiveTag().equals(TAG.tags.GetTagByIdentifier(args[1]))) {
-                                pte.SetActiveTag(new TAGEvent(args[1], args[2]));
+                            if(pte.HasTag(from)) {
+                                //Bukkit.broadcastMessage("locla1");
+                                if(pte.GetActiveTag() != null) {
+                                    //Bukkit.broadcastMessage("locla2");
+                                    if(pte.GetActiveTag().equals(from)) {
+                                        pte.SetActiveTag(to);
+                                        //Bukkit.broadcastMessage("locla");
+                                    }
+                                }
+                                pte.SetTag(from, sto);
                             }
-                            pte.SetTag(TAG.tags.GetTagByIdentifier(args[1]), to);
                             
                         }
-                        
-                        TAG.tags.SetTag(TAG.tags.GetTagByIdentifier(args[1]), to);
-                        sender.sendMessage(Messages.TagUpdate(args[1], from, to));
+                        sender.sendMessage(Messages.TagUpdate(args[1], sfrom, sto));
                         
                     }
                     else {

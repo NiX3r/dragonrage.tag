@@ -1,8 +1,7 @@
 package cz.nixdevelopment.tag;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.nixdevelopment.tag.commands.Commands;
@@ -56,6 +55,11 @@ public class TAG extends JavaPlugin{
     public void onDisable() {
         
         Debugger.Debug("Disabling plugin...");
+        
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            TAGUtil.UnloadPlayer(p);
+            p.kickPlayer("Server se restartuje!");
+        }
         
         TAGUtil.UnloadTags();
         

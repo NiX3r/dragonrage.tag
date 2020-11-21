@@ -33,6 +33,9 @@ public class Messages {
     public static String ListAll() {
         return "§4-----===== Vsechny vytvorene tagy =====-----\n§7%TAGS%";
     }
+    public static String TagReload() {
+        return TAG.Prefix + "§7Reloadnul jsi tagy a hrace";
+    }
     public static String TargetOffline(String player) {
         return TAG.Prefix + "§7Hrac §4" + player + " §7je offline";
     }

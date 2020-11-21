@@ -23,7 +23,7 @@ public class OnChat implements Listener {
         String output = TAG.Format;
         output = output.replace("%NICK%", event.getPlayer().getName());
         if(tag != null) {
-            output = output.replace("%TAG%", tag);
+            output = output.replace("%TAG%", tag).replace("_", " ");
         }
         else {
             output = output.replace(" %TAG%", "");
