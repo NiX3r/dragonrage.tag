@@ -21,7 +21,6 @@ public class OnChat implements Listener {
         String msg = event.getMessage();
         
         String output = TAG.Format;
-        output = output.replace("%NICK%", event.getPlayer().getName());
         if(tag != null) {
             output = output.replace("%TAG%", tag).replace("_", " ");
         }
@@ -47,6 +46,7 @@ public class OnChat implements Listener {
             output = output.replace("%SUFFIX%", "");
         }
         output = output.replaceAll("&", "§");
+        output = output.replace("%NICK%", event.getPlayer().getName());
         output = output.replace("%CHAT%", msg);
         output = output.replace("%", "%%");
         if(event.getPlayer().hasPermission("tag.color"))
