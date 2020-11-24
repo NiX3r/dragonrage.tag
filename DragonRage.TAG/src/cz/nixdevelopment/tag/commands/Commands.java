@@ -46,7 +46,7 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(Messages.ListAll().replace("%TAGS%", tags));
                 }
                 else {
-                    sender.sendMessage(Messages.HaveNoPerm("tag.viewother"));
+                    sender.sendMessage(Messages.HaveNoPerm("tag.listall"));
                 }
             }
             

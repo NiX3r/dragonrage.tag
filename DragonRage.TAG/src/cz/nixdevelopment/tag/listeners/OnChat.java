@@ -10,7 +10,7 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class OnChat implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOW)
     public static void OnChatEvent(AsyncPlayerChatEvent event) {
         
         String prefix = PermissionsEx.getUser(event.getPlayer()).getPrefix();
