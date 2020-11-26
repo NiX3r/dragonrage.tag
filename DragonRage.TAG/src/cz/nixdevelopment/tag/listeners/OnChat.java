@@ -20,6 +20,12 @@ public class OnChat implements Listener {
             tag = TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag().GetTag(); 
         String msg = event.getMessage();
         
+        // check if msg contains [item]
+        if(msg.contains("[item]") && event.getPlayer().getItemInHand() != null) {
+            msg = msg.replace("[item]", "");
+            msg += ". Item:&a&o".replaceAll("&", "§") + event.getPlayer().getItemInHand().getType().name().replace("_", " ");
+        }
+        
         String output = TAG.Format;
         if(tag != null) {
             output = output.replace("%TAG%", tag).replace("_", " ");
