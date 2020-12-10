@@ -52,6 +52,7 @@ public class TAG extends JavaPlugin{
         Debugger.Debug("Plugin was enabled");
         
     }
+    
     public void onDisable() {
         
         Debugger.Debug("Disabling plugin...");
