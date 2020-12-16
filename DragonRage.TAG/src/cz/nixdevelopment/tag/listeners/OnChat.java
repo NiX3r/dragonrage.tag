@@ -6,15 +6,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import cz.nixdevelopment.tag.TAG;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 public class OnChat implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public static void OnChatEvent(AsyncPlayerChatEvent event) {
         
-        String prefix = PermissionsEx.getUser(event.getPlayer()).getPrefix();
-        String suffix = PermissionsEx.getUser(event.getPlayer()).getSuffix();
+        String prefix = PlaceholderAPI.setPlaceholders(event.getPlayer(), "%luckperms_prefix%");
+        String suffix = PlaceholderAPI.setPlaceholders(event.getPlayer(), "%luckperms_suffix%");
         String tag = null;
         if(TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag() != null)
             tag = TAG.players.GetPlayersTagByPlayer(event.getPlayer()).GetActiveTag().GetTag(); 

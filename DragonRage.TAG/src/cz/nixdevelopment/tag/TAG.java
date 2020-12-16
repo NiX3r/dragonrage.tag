@@ -26,7 +26,7 @@ public class TAG extends JavaPlugin{
         
         Debugger.Debug("Enabling plugin...");
         
-        if(Bukkit.getPluginManager().getPlugin("PermissionsEx") == null) {
+        if(Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
             System.out.println("§4Plugin dependecy is PermissionEx!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
@@ -59,7 +59,7 @@ public class TAG extends JavaPlugin{
         
         for(Player p : Bukkit.getOnlinePlayers()) {
             TAGUtil.UnloadPlayer(p);
-            p.kickPlayer("Server se restartuje!");
+            //p.kickPlayer("Server se restartuje!");
         }
         
         TAGUtil.UnloadTags();
